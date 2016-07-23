@@ -102,7 +102,7 @@ public class OURSet<E extends Comparable<E>> {
                 new Operations.Predicate2<ElementState<E>, ElementState<E>>() {
                     @Override
                     public boolean call(ElementState<E> first, ElementState<E> second) {
-                        return first.compareTo(second) >= 0;
+                        return first.compareTo(second) < 0;
                     }
                 });
         rest.add(winner);
