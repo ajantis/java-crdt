@@ -18,12 +18,10 @@ public final class Operations {
     }
 
     public static <E> Set<E> union(Set<E> firstSet, final Set<E> secondSet) {
-        return filtered(firstSet, new Predicate<E>() {
-            @Override
-            public boolean call(E element) {
-                return secondSet.contains(element);
-            }
-        });
+        final Set<E> newSet = new HashSet<>();
+        newSet.addAll(firstSet);
+        newSet.addAll(secondSet);
+        return newSet;
     }
 
     public static <E> Set<E> filtered(Set<E> set, Predicate<E> predicate) {
