@@ -24,10 +24,10 @@
 
 package io.dmitryivanov.crdt;
 
-import com.google.common.collect.*;
+import io.dmitryivanov.crdt.helpers.ComparisonChain;
+import io.dmitryivanov.crdt.helpers.Operations;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OURSet<E extends Comparable<E>> {
 
@@ -82,7 +82,7 @@ public class OURSet<E extends Comparable<E>> {
     }
 
     OURSet(Collection<ElementState<E>> elementStates) {
-        elements = Sets.newHashSet(elementStates);
+        elements = new HashSet<>(elementStates);
     }
 
     public void add(ElementState<E> elementState) {
@@ -98,8 +98,13 @@ public class OURSet<E extends Comparable<E>> {
             }
         }
 
-        ElementState<E> winner = conflicts.stream().max((o1, o2) -> o1.compareTo(o2)).get();
-
+        ElementState<E> winner = Operations.select(conflicts,
+                new Operations.Predicate2<ElementState<E>, ElementState<E>>() {
+                    @Override
+                    public boolean call(ElementState<E> first, ElementState<E> second) {
+                        return first.compareTo(second) >= 0;
+                    }
+                });
         rest.add(winner);
 
         this.elements = rest;
@@ -110,36 +115,53 @@ public class OURSet<E extends Comparable<E>> {
     }
 
     public OURSet<E> merge(OURSet<E> anotherOURSet) {
-        final Sets.SetView<ElementState<E>> union = Sets.union(elements, anotherOURSet.getElements());
+        final Set<ElementState<E>> union = Operations.union(elements, anotherOURSet.getElements());
 
         // group by elements id
-        final ImmutableMap<UUID, Collection<ElementState<E>>> index = Multimaps.index(union, ElementState::getId).asMap();
-
-        //apply the merging logic
-        final Map<UUID, ElementState<E>> mergeResult = Maps.transformEntries(index, (key, conflicts) -> {
-            final ElementState<E> mergedState;
-
-            if (conflicts.size() > 1) {
-                mergedState = Collections.max(conflicts);
-            } else {
-                mergedState = conflicts.iterator().next();
+        final Map<UUID, Collection<ElementState<E>>> index = Operations.toListMap(union, new Operations.Mapper<ElementState<E>, UUID>() {
+            @Override
+            public UUID call(ElementState<E> element) {
+                return element.id;
             }
-
-            return mergedState;
         });
 
-        return new OURSet<>(ImmutableSet.copyOf(mergeResult.values()));
+        //apply the merging logic
+        final Map<UUID, ElementState<E>> mergeResult = Operations.mapValues(index,
+                new Operations.Mapper<Collection<ElementState<E>>, ElementState<E>>() {
+                    @Override
+                    public ElementState<E> call(Collection<ElementState<E>> conflicts) {
+                        final ElementState<E> mergedState;
+                        if (conflicts.size() > 1) {
+                            mergedState = Collections.max(conflicts);
+                        } else {
+                            mergedState = conflicts.iterator().next();
+                        }
+                        return mergedState;
+                    }
+                });
+
+        return new OURSet<>(new HashSet<>(mergeResult.values()));
     }
 
     public OURSet<E> diff(OURSet<E> anotherOURSet) {
         final OURSet<E> mergeResult = merge(anotherOURSet);
-        final Sets.SetView<ElementState<E>> diff = Sets.difference(mergeResult.getElements(), anotherOURSet.getElements());
+        final Set<ElementState<E>> diff = Operations.diff(mergeResult.getElements(), anotherOURSet.getElements());
 
         return new OURSet<>(diff);
     }
 
     public Set<E> lookup() {
-        return elements.stream().filter(e -> !e.removed).map(e -> e.element).collect(Collectors.toSet());
+        return Operations.filteredAndMapped(elements, new Operations.Predicate<ElementState<E>>() {
+            @Override
+            public boolean call(ElementState<E> element) {
+                return !element.removed;
+            }
+        }, new Operations.Mapper<ElementState<E>, E>() {
+            @Override
+            public E call(ElementState<E> element) {
+                return element.element;
+            }
+        });
     }
 
     public Set<ElementState<E>> getElements() {

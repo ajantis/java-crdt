@@ -24,10 +24,11 @@
 
 package io.dmitryivanov.crdt;
 
+import io.dmitryivanov.crdt.helpers.Operations;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TwoPSet<E> {
 
@@ -54,7 +55,7 @@ public class TwoPSet<E> {
     }
 
     public Set<E> lookup() {
-        Set<E> resultSet = addSet.lookup().stream().filter(e -> !removeSet.lookup().contains(e)).collect(Collectors.toSet());
+        Set<E> resultSet = Operations.diff(addSet.lookup(), removeSet.lookup());
         return Collections.unmodifiableSet(resultSet);
     }
 
@@ -74,7 +75,7 @@ public class TwoPSet<E> {
     }
 
     private Set<E> diff(HashSet<E> firstSet, HashSet<E> secondSet) {
-        return firstSet.stream().filter(e -> !secondSet.contains(e)).collect(Collectors.toSet());
+        return Operations.diff(firstSet, secondSet);
     }
 
     // Visible for testing
