@@ -118,7 +118,7 @@ public class OURSet<E extends Comparable<E>> {
         final Set<ElementState<E>> union = Operations.union(elements, anotherOURSet.getElements());
 
         // group by elements id
-        final Map<UUID, Collection<ElementState<E>>> index = Operations.toListMap(union, new Operations.Mapper<ElementState<E>, UUID>() {
+        final Map<UUID, Collection<ElementState<E>>> index = Operations.groupBy(union, new Operations.Mapper<ElementState<E>, UUID>() {
             @Override
             public UUID call(ElementState<E> element) {
                 return element.id;

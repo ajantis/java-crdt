@@ -73,7 +73,7 @@ public final class Operations {
         return winner;
     }
 
-    public static <K, V> Map<K, Collection<V>> toListMap(Set<V> map, Mapper<V, K> mapper) {
+    public static <K, V> Map<K, Collection<V>> groupBy(Collection<V> map, Mapper<V, K> mapper) {
         final Map<K, Collection<V>> newMap = new HashMap<>(map.size());
         for (V element : map) {
             K key = mapper.call(element);
