@@ -24,10 +24,11 @@
 
 package io.dmitryivanov.crdt;
 
+import io.dmitryivanov.crdt.helpers.Operations;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GSet<E> {
 
@@ -56,8 +57,7 @@ public class GSet<E> {
     }
 
     public GSet<E> diff(GSet<E> anotherGSet) {
-        final Set<E> anotherSetLookup = anotherGSet.lookup();
-        return new GSet<>(this.set.stream().filter(e -> !anotherSetLookup.contains(e)).collect(Collectors.toSet()));
+        return new GSet<>(Operations.diff(set, anotherGSet.lookup()));
     }
 
     // Visible for testing

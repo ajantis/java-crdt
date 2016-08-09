@@ -24,8 +24,9 @@
 
 package io.dmitryivanov.crdt;
 
+import io.dmitryivanov.crdt.helpers.Operations;
+
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ORSet<E> {
 
@@ -95,14 +96,28 @@ public class ORSet<E> {
     }
 
     public Set<E> lookup() {
-        return addSet.lookup().stream().filter(this::nonRemoved).map(ElementState::getElement).collect(Collectors.toSet());
+        return Operations.filteredAndMapped(addSet.lookup(), new Operations.Predicate<ElementState<E>>() {
+            @Override
+            public boolean call(ElementState<E> element) {
+                return nonRemoved(element);
+            }
+        }, new Operations.Mapper<ElementState<E>, E>() {
+            @Override
+            public E call(ElementState<E> element) {
+                return element.element;
+            }
+        });
     }
 
-    private boolean nonRemoved(ElementState<E> addState) {
-        Set<ElementState<E>> removes =
-                removeSet.lookup().stream()
-                        .filter(removeState -> removeState.getElement().equals(addState.getElement())
-                                && removeState.getTag().equals(addState.getTag())).collect(Collectors.toSet());
+    private boolean nonRemoved(final ElementState<E> addState) {
+        Set<ElementState<E>> removes = Operations.filtered(removeSet.lookup(),
+                new Operations.Predicate<ElementState<E>>() {
+                    @Override
+                    public boolean call(ElementState<E> element) {
+                        return element.getElement().equals(addState.getElement())
+                                && element.getTag().equals(addState.getTag());
+                    }
+                });
         return removes.isEmpty();
     }
 
