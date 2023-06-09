@@ -43,7 +43,7 @@ public class GSetTests {
         // Actual test
         Set<String> result = gSet.lookup();
 
-        assertTrue(result.size() == 3);
+        assertEquals(3, result.size());
         assertTrue(result.contains("ape"));
         assertTrue(result.contains("dog"));
         assertTrue(result.contains("cat"));
@@ -62,7 +62,7 @@ public class GSetTests {
         // Actual test
         GSet<String> result = firstGSet.merge(secondGSet);
 
-        assertTrue(result.lookup().size() == 3);
+        assertEquals(3, result.lookup().size());
         assertTrue(result.lookup().contains("dog"));
         assertTrue(result.lookup().contains("cat"));
         assertTrue(result.lookup().contains("dog"));
@@ -84,7 +84,7 @@ public class GSetTests {
 
         GSet<String> result = firstGSet.diff(secondGSet);
 
-        assertTrue(result.lookup().size() == 1);
+        assertEquals(1, result.lookup().size());
         assertTrue(result.lookup().contains("ape"));
     }
 }

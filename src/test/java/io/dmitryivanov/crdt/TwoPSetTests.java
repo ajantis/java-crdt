@@ -48,7 +48,7 @@ public class TwoPSetTests {
         // Actual test
         final Set<String> lookup = twoPSet.lookup();
 
-        assertTrue(lookup.size() == 2);
+        assertEquals(2, lookup.size());
         assertTrue(lookup.contains("ape"));
         assertTrue(lookup.contains("tiger"));
     }
@@ -72,17 +72,17 @@ public class TwoPSetTests {
 
         final GSet<String> resultAddSet = resultSet.getAddSet();
         final Set<String> resultAddSetLookup = resultAddSet.lookup();
-        assertTrue(resultAddSetLookup.size() == 4);
-        resultAddSetLookup.contains("ape");
-        resultAddSetLookup.contains("dog");
-        resultAddSetLookup.contains("cat");
-        resultAddSetLookup.contains("tiger");
+        assertEquals(4, resultAddSetLookup.size());
+        assertTrue(resultAddSetLookup.contains("ape"));
+        assertTrue(resultAddSetLookup.contains("dog"));
+        assertTrue(resultAddSetLookup.contains("cat"));
+        assertTrue(resultAddSetLookup.contains("tiger"));
 
         final GSet<String> resultRemoveSet = resultSet.getRemoveSet();
         final Set<String> resultRemoveSetLookup = resultRemoveSet.lookup();
-        assertTrue(resultRemoveSetLookup.size() == 2);
-        resultRemoveSetLookup.contains("cat");
-        resultRemoveSetLookup.contains("ape");
+        assertEquals(2, resultRemoveSetLookup.size());
+        assertTrue(resultRemoveSetLookup.contains("cat"));
+        assertTrue(resultRemoveSetLookup.contains("ape"));
 
         final TwoPSet<String> reverseResult = secondTwoPSet.merge(firstTwoPSet);
         assertEquals(resultSet, reverseResult);
@@ -109,22 +109,22 @@ public class TwoPSetTests {
         final TwoPSet<String> resultSet = firstTwoPSet.diff(secondTwoPSet);
 
         final GSet<String> resultAddSet = resultSet.getAddSet();
-        assertTrue(resultAddSet.lookup().size() == 1);
-        resultAddSet.lookup().contains("dog");
+        assertEquals(1, resultAddSet.lookup().size());
+        assertTrue(resultAddSet.lookup().contains("dog"));
 
         final GSet<String> resultRemoveSet = resultSet.getRemoveSet();
-        assertTrue(resultRemoveSet.lookup().size() == 1);
-        resultRemoveSet.lookup().contains("cat");
+        assertEquals(1, resultRemoveSet.lookup().size());
+        assertTrue(resultRemoveSet.lookup().contains("cat"));
 
         // Reverse diff
         final TwoPSet<String> resultSet2 = secondTwoPSet.diff(firstTwoPSet);
 
         final GSet<String> resultAddSet2 = resultSet2.getAddSet();
-        assertTrue(resultAddSet2.lookup().size() == 1);
-        resultAddSet2.lookup().contains("tiger");
+        assertEquals(1, resultAddSet2.lookup().size());
+        assertTrue(resultAddSet2.lookup().contains("tiger"));
 
-        final GSet<String> resultRemoveSet2 = resultSet.getRemoveSet();
-        assertTrue(resultRemoveSet2.lookup().size() == 1);
-        resultRemoveSet2.lookup().contains("ape");
+        final GSet<String> resultRemoveSet2 = resultSet2.getRemoveSet();
+        assertEquals(1, resultRemoveSet2.lookup().size());
+        assertTrue(resultRemoveSet2.lookup().contains("ape"));
     }
 }

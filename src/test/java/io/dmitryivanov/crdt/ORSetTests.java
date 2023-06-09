@@ -48,7 +48,7 @@ public class ORSetTests {
         // Actual test
         final Set<String> lookup = orSet.lookup();
 
-        assertTrue(lookup.size() == 2);
+        assertEquals(2, lookup.size());
         assertTrue(lookup.contains("ape"));
         assertTrue(lookup.contains("tiger"));
     }
@@ -72,18 +72,18 @@ public class ORSetTests {
 
         final GSet<ORSet.ElementState<String>> resultAddSet = resultSet.getAddSet();
         final Set<ORSet.ElementState<String>> addLookup = resultAddSet.lookup();
-        assertTrue(addLookup.size() == 5);
-        addLookup.contains(new ORSet.ElementState<>("#a", "ape"));
-        addLookup.contains(new ORSet.ElementState<>("#b", "ape"));
-        addLookup.contains(new ORSet.ElementState<>("#c", "dog"));
-        addLookup.contains(new ORSet.ElementState<>("#d", "cat"));
-        addLookup.contains(new ORSet.ElementState<>("#h", "tiger"));
+        assertEquals(5, addLookup.size());
+        assertTrue(addLookup.contains(new ORSet.ElementState<>("#a", "ape")));
+        assertTrue(addLookup.contains(new ORSet.ElementState<>("#b", "ape")));
+        assertTrue(addLookup.contains(new ORSet.ElementState<>("#c", "dog")));
+        assertTrue(addLookup.contains(new ORSet.ElementState<>("#d", "cat")));
+        assertTrue(addLookup.contains(new ORSet.ElementState<>("#h", "tiger")));
 
         final GSet<ORSet.ElementState<String>> resultRemoveSet = resultSet.getRemoveSet();
         final Set<ORSet.ElementState<String>> removeLookup = resultRemoveSet.lookup();
-        assertTrue(removeLookup.size() == 2);
-        addLookup.contains(new ORSet.ElementState<>("#d", "cat"));
-        addLookup.contains(new ORSet.ElementState<>("#a", "ape"));
+        assertEquals(2, removeLookup.size());
+        assertTrue(removeLookup.contains(new ORSet.ElementState<>("#d", "cat")));
+        assertTrue(removeLookup.contains(new ORSet.ElementState<>("#a", "ape")));
 
         ORSet<String> reverseResultSet = secondORSet.merge(firstORSet);
         assertEquals(resultSet, reverseResultSet);
@@ -107,12 +107,12 @@ public class ORSetTests {
         final ORSet<String> resultSet = firstORSet.diff(secondORSet);
 
         final GSet<ORSet.ElementState<String>> resultAddSet = resultSet.getAddSet();
-        assertTrue(resultAddSet.lookup().size() == 2);
-        resultAddSet.lookup().contains(new ORSet.ElementState<>("#b", "ape"));
-        resultAddSet.lookup().contains(new ORSet.ElementState<>("#c", "dog"));
+        assertEquals(2, resultAddSet.lookup().size());
+        assertTrue(resultAddSet.lookup().contains(new ORSet.ElementState<>("#b", "ape")));
+        assertTrue(resultAddSet.lookup().contains(new ORSet.ElementState<>("#c", "dog")));
 
         final GSet<ORSet.ElementState<String>> resultRemoveSet = resultSet.getRemoveSet();
-        assertTrue(resultRemoveSet.lookup().size() == 1);
-        resultRemoveSet.lookup().contains(new ORSet.ElementState<>("#d", "cat"));
+        assertEquals(1, resultRemoveSet.lookup().size());
+        assertTrue(resultRemoveSet.lookup().contains(new ORSet.ElementState<>("#d", "cat")));
     }
 }
