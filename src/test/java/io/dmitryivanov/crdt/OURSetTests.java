@@ -80,10 +80,10 @@ public class OURSetTests {
         OURSet<String> mergeResult = firstOURSet.merge(secondOURSet);
 
         assertEquals(mergeResult.getElements().size(), 4);
-        mergeResult.getElements().contains(ape);
-        mergeResult.getElements().contains(dog);
-        mergeResult.getElements().contains(tiger);
-        mergeResult.getElements().contains(removedCat);
+        assertTrue(mergeResult.getElements().contains(ape));
+        assertTrue(mergeResult.getElements().contains(dog));
+        assertTrue(mergeResult.getElements().contains(tiger));
+        assertTrue(mergeResult.getElements().contains(removedCat));
 
         OURSet<String> reverseMergeResult = secondOURSet.merge(firstOURSet);
         assertEquals("'merge' should be symmetrical", mergeResult, reverseMergeResult);
@@ -112,13 +112,13 @@ public class OURSetTests {
         OURSet<String> diffResult = firstOURSet.diff(secondOURSet);
 
         assertEquals(diffResult.getElements().size(), 2);
-        diffResult.getElements().contains(ape);
-        diffResult.getElements().contains(removedCat);
+        assertTrue(diffResult.getElements().contains(ape));
+        assertTrue(diffResult.getElements().contains(removedCat));
 
         // Reverse diff
         OURSet<String> reverseDiffResult = secondOURSet.diff(firstOURSet);
 
         assertEquals(reverseDiffResult.getElements().size(), 1);
-        reverseDiffResult.getElements().contains(tiger);
+        assertTrue(reverseDiffResult.getElements().contains(tiger));
     }
 }

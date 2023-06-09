@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LWWSetTests {
@@ -47,7 +48,7 @@ public class LWWSetTests {
         // Actual test
         final Set<String> lookup = lwwSet.lookup();
 
-        assertTrue(lookup.size() == 2);
+        assertEquals(2, lookup.size());
         assertTrue(lookup.contains("ape"));
         assertTrue(lookup.contains("tiger"));
     }
@@ -71,18 +72,18 @@ public class LWWSetTests {
 
         final GSet<LWWSet.ElementState<String>> resultAddSet = resultSet.getAddSet();
         final Set<LWWSet.ElementState<String>> addLookup = resultAddSet.lookup();
-        assertTrue(addLookup.size() == 5);
-        addLookup.contains(new LWWSet.ElementState<>(1, "ape"));
-        addLookup.contains(new LWWSet.ElementState<>(3, "ape"));
-        addLookup.contains(new LWWSet.ElementState<>(1, "dog"));
-        addLookup.contains(new LWWSet.ElementState<>(1, "tiger"));
-        addLookup.contains(new LWWSet.ElementState<>(1, "cat"));
+        assertEquals(5, addLookup.size());
+        assertTrue(addLookup.contains(new LWWSet.ElementState<>(1, "ape")));
+        assertTrue(addLookup.contains(new LWWSet.ElementState<>(3, "ape")));
+        assertTrue(addLookup.contains(new LWWSet.ElementState<>(1, "dog")));
+        assertTrue(addLookup.contains(new LWWSet.ElementState<>(1, "tiger")));
+        assertTrue(addLookup.contains(new LWWSet.ElementState<>(1, "cat")));
 
         final GSet<LWWSet.ElementState<String>> resultRemoveSet = resultSet.getRemoveSet();
         final Set<LWWSet.ElementState<String>> removeLookup = resultRemoveSet.lookup();
-        assertTrue(removeLookup.size() == 2);
-        addLookup.contains(new LWWSet.ElementState<>(2, "cat"));
-        addLookup.contains(new LWWSet.ElementState<>(2, "ape"));
+        assertEquals(2, removeLookup.size());
+        assertTrue(removeLookup.contains(new LWWSet.ElementState<>(2, "cat")));
+        assertTrue(removeLookup.contains(new LWWSet.ElementState<>(2, "ape")));
     }
 
     @Test
@@ -104,13 +105,13 @@ public class LWWSetTests {
         final LWWSet<String> resultSet = firstLwwSet.diff(secondLwwSet);
 
         final GSet<LWWSet.ElementState<String>> resultAddSet = resultSet.getAddSet();
-        assertTrue(resultAddSet.lookup().size() == 3);
-        resultAddSet.lookup().contains(new LWWSet.ElementState<>(3, "ape"));
-        resultAddSet.lookup().contains(new LWWSet.ElementState<>(1, "dog"));
-        resultAddSet.lookup().contains(new LWWSet.ElementState<>(2, "tiger"));
+        assertEquals(3, resultAddSet.lookup().size());
+        assertTrue(resultAddSet.lookup().contains(new LWWSet.ElementState<>(3, "ape")));
+        assertTrue(resultAddSet.lookup().contains(new LWWSet.ElementState<>(1, "dog")));
+        assertTrue(resultAddSet.lookup().contains(new LWWSet.ElementState<>(2, "tiger")));
 
         final GSet<LWWSet.ElementState<String>> resultRemoveSet = resultSet.getRemoveSet();
-        assertTrue(resultRemoveSet.lookup().size() == 1);
-        resultRemoveSet.lookup().contains(new LWWSet.ElementState<>(2, "cat"));
+        assertEquals(1, resultRemoveSet.lookup().size());
+        assertTrue(resultRemoveSet.lookup().contains(new LWWSet.ElementState<>(2, "cat")));
     }
 }

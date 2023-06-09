@@ -75,6 +75,19 @@ public class OURSet<E extends Comparable<E>> {
         public E getElement() {
             return element;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ElementState<?> that = (ElementState<?>) o;
+            return removed == that.removed && timestamp == that.timestamp && Objects.equals(id, that.id) && Objects.equals(element, that.element);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, removed, timestamp, element);
+        }
     }
 
     public OURSet() {
